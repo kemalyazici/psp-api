@@ -9,11 +9,16 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('v3:api',['except'=>['login','register']]);
+    }
+
     public function register(Request $request){
         $fields = $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|unique:users,email',
-            'password' => 'required|string|confirmed'
+            'password' => 'required|string|confirmed|min:6'
         ]);
         $user = User::create([
            'name' => $fields['name'],
@@ -22,13 +27,45 @@ class AuthController extends Controller
             'password' => Hash::make($fields['password'])
         ]);
 
-        $token = $user->createToken('myapptoken')->plainTextToken;
 
         $response = [
             'user' => $user,
-          'token' => $token,
         ];
 
         return response($response,201);
+    }
+
+    public function login(Request $request){
+        $fields = $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string'
+        ]);
+
+        // Check email
+        $user = User::where('email',$fields['email'])->first();
+
+        // Check Password
+        if(!$user || !Hash::check($fields['password'],$user->password)){
+            return response(
+                [
+                    'message' => 'Creds are not valid',
+                ],
+            401);
+        }
+        if(!$token = auth()->attempt($fields)){
+            return response(['error' => 'Unauthorized'], 401);
+        }
+        return $this->respondWithToken($token);
+
+
+    }
+
+    protected function respondWithToken($token)
+    {
+        return response([
+            'token' => $token,
+            'status' => 'APPROVED',
+            'apiKey' => auth()->user()->apiKey
+        ],200);
     }
 }
