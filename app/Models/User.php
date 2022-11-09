@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'apiKey'
     ];
 
     /**
@@ -41,4 +42,22 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function ApiKey($email){
+        $dec= sha1(md5($email."secret words from Kemal YAZICI".microtime()));
+        $count=strlen($dec);
+        $x = str_split($dec);
+        $x1 = "";
+        $a = 0;
+        while($a<$count){
+            if($a==8 OR $a==16 OR $a==24 OR $a==32){
+                $x1 .= "-";
+            }
+            $x1 .= $x[$a];
+            $a++;
+        }
+        $api = strtoupper($x1);
+        return $api;
+
+    }
 }
