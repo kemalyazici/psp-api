@@ -14,6 +14,8 @@ class AuthController extends Controller
         $this->middleware('v3:api',['except'=>['login','register']]);
     }
 
+
+    // Merchant registration
     public function register(Request $request){
         $fields = $request->validate([
             'name' => 'required|string',
@@ -35,6 +37,8 @@ class AuthController extends Controller
         return response($response,201);
     }
 
+
+    // Merchant login
     public function login(Request $request){
         $fields = $request->validate([
             'email' => 'required|string',
