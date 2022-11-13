@@ -54,7 +54,7 @@ class AuthController extends Controller
                 [
                     'message' => 'Creds are not valid',
                 ],
-            401);
+            400);
         }
         if(!$token = auth()->attempt($fields)){
             return response(['error' => 'Unauthorized'], 401);
