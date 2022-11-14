@@ -41,7 +41,7 @@ class TransactionController extends Controller
             }
 
         }
-        return response($list->where('currency','GBP')->paginate(50),200);
+        return response($list->paginate(50),200);
     }
 
     public function transaction(Request $request){
