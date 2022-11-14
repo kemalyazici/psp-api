@@ -48,6 +48,8 @@ class TransactionController extends Controller
         $transaction = Transaction::where('transactionId',$request->transactionId)->first();
         $merchant = $transaction->user;
         $client = $transaction->customer;
+        $myDateTime = DateTime::createFromFormat('Y-m-d', $transaction->date);
+        $transaction->date = $myDateTime->format('j F Y');
         unset($transaction->user);
         unset($transaction->customer);
 
