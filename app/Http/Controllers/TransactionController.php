@@ -36,7 +36,7 @@ class TransactionController extends Controller
 
         $list = $transactions->whereBetween('date',[$request->fromDate,$request->toDate]);
         foreach ($request->all() as $k =>$a){
-            if($k!="fromDate" && $k!="apiKey" && $k!="toDate" && $k!="page"){
+            if($k!="fromDate" && $k!="apiKey" && $k!="toDate" && $k!="page" && $a != ""){
                 $transactions->where($k,$a);
             }
 
