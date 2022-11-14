@@ -31,12 +31,17 @@ class TransactionController extends Controller
     }
 
     public function list(Request $request){
-        $arr = json_decode(json_encode($request->all()), true);
-        unset($arr['fromDate']);
-        unset($arr['apiKey']);
-        unset($arr['toDate']);
-        $list = auth()->user()->transactions()->whereBetween('date',[$request->fromDate,$request->toDate])->where($arr)->paginate(50);
-        return response($list,200);
+
+        $transactions = auth()->user()->transactions();
+
+        $list = $transactions->whereBetween('date',[$request->fromDate,$request->toDate]);
+        foreach ($request->all() as $k =>$a){
+            if($k!="fromDate" && $k!="apiKey" && $k!="toDate" && $k!="page"){
+                $transactions->where($k,$a);
+            }
+
+        }
+        return response($list->where('currency','GBP')->paginate(50),200);
     }
 
     public function transaction(Request $request){

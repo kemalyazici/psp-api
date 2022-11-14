@@ -17,8 +17,9 @@ class Transaction extends Model
         'user_id',
         'customer_id',
         'amount',
-        'currency'
+        'currency',
     ];
+
     use HasFactory;
 
     public function user(){
